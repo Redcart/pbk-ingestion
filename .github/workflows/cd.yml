@@ -8,9 +8,9 @@ on:
             - "dev"
 
 env:
-  GCP_PROJECT_ID: ${{ vars.PROJECT_ID }}
-  GCP_PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
-  REGION: ${{ vars.REGION}}
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  GCP_PROJECT_NUMBER: ${{ vars.GCP_PROJECT_NUMBER }}
+  GCP_REGION: ${{ vars.GCP_REGION }}
   SERVICE_ACCOUNT_RUNTIME: ${{ vars.SERVICE_ACCOUNT_RUNTIME }}
   SERVICE_ACCOUNT_GH: ${{ vars.SERVICE_ACCOUNT_GH }}
   WIF_POOL_ID: ${{ vars.WIF_POOL_ID }} # Workload Identity Federation Pool
@@ -35,7 +35,7 @@ jobs:
       uses: 'google-github-actions/auth@v2'
       with:
         token_format: access_token
-        workload_identity_provider: 'projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ ENV.WIF_POOL_PROVIDER }}/providers/${{ ENV.WIF_POOL_PROVIDER }}'
+        workload_identity_provider: 'projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ env.WIF_POOL_ID }}/providers/${{ env.WIF_POOL_PROVIDER }}'
         service_account: ${{ env.SERVICE_ACCOUNT_GH }}
         access_token_lifetime: 300s
 
@@ -43,7 +43,7 @@ jobs:
       run: |
         gcloud functions deploy ${{ env.PROJECT }}-${{ env.STREAM }} \
         --gen2 \
-        --region=${{ env.REGION }} \
+        --region=${{ env.GCP_REGION }} \
         --runtime=python310 \
         --memory=1G \
         --source=cloud_function_etl \
@@ -53,4 +53,4 @@ jobs:
         --ingress-settings=internal-only \
         --log-http \
         --run-service-account=${{ env.SERVICE_ACCOUNT_RUNTIME }} \
-        --build-service-account=projects/${{ env.PROJECT_ID }}/serviceAccounts/${{ env.SERVICE_ACCOUNT_GH }}
+        --build-service-account=projects/${{ env.GCP_PROJECT_ID }}/serviceAccounts/${{ env.SERVICE_ACCOUNT_GH }}
