@@ -40,6 +40,7 @@ def extract_transform_load(request):
 
         ingest_data(
             input_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_stations.csv", 
+            bucket_name=GCS_BUCKET_NAME,
             project_id=GCP_PROJECT_ID,
             dataset=DATASET, 
             table="stations", 
@@ -57,7 +58,8 @@ def extract_transform_load(request):
         )
 
         ingest_data(
-            input_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_bikes.csv", 
+            input_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_bikes.csv",
+            bucket_name=GCS_BUCKET_NAME,
             project_id=GCP_PROJECT_ID,
             dataset=DATASET, 
             table="capacity", 
