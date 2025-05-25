@@ -128,7 +128,7 @@ def ingest_data(input_path, bucket_name, project_id, dataset, table, mode):
             format="%Y-%m-%d %H:%M:%S"
         )
 
-        print(f"les types des colonnes apres load sont {df_transformed.info()}")
+        logging.info(f"After loading, columns types are {df_transformed.info()}")
         job_config = bigquery.LoadJobConfig(
         # Specify a (partial) schema. All columns are always written to the
         # table. The schema is used to assist in data type definitions.
@@ -194,11 +194,13 @@ def ingest_data(input_path, bucket_name, project_id, dataset, table, mode):
         )
 
     job = client.load_table_from_dataframe(
-        df_transformed, table_id, job_config=job_config
+       dataframe= df_transformed, 
+       table=table_id, 
+       job_config=job_config
     )  # Make an API request.
-    job.result()  # Wait for the job to complete.
+    job.result() # Wait for the job to complete.
 
-    table = client.get_table(table_id)  # Make an API request.
+    table = client.get_table(table_id) # Make an API request.
     logging.info(
         f"Loaded {table.num_rows} rows and {len(table.schema)} columns to {table_id}")
 

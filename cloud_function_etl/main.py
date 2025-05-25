@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 import json
 import logging 
@@ -6,8 +7,8 @@ import pytz
 from utils import get_data, transform_data, ingest_data
 
 URL = "https://api.publibike.ch/v1/public/partner/stations"
-BUCKET_NAME = "proj-etl-publibike-dev"
-PROJECT_ID = "inspired-victor-442419-j3"
+GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME")
+GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID")
 
 def extract_transform_load(request):
 
@@ -22,7 +23,7 @@ def extract_transform_load(request):
 
     get_data(
         url=URL, 
-        bucket_name=BUCKET_NAME,
+        GCS_BUCKET_NAME=GCS_BUCKET_NAME,
         output_path=f"raw_data/{current_ymd}/{current_hour}/data.json"
     )
 
@@ -30,7 +31,7 @@ def extract_transform_load(request):
 
         transform_data(
             input_path=f"raw_data/{current_ymd}/{current_hour}/data.json",
-            bucket_name=BUCKET_NAME,
+            GCS_BUCKET_NAME=GCS_BUCKET_NAME,
             output_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_stations.csv",
             mode="stations",
             date_time=current_full_date
@@ -38,8 +39,8 @@ def extract_transform_load(request):
 
         ingest_data(
             input_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_stations.csv", 
-            bucket_name=BUCKET_NAME,
-            project_id=PROJECT_ID,
+            GCS_BUCKET_NAME=GCS_BUCKET_NAME,
+            GCP_PROJECT_ID=GCP_PROJECT_ID,
             dataset="publibike", 
             table="stations", 
             mode="stations"
@@ -49,7 +50,7 @@ def extract_transform_load(request):
 
         transform_data(
             input_path=f"raw_data/{current_ymd}/{current_hour}/data.json",
-            bucket_name=BUCKET_NAME,
+            GCS_BUCKET_NAME=GCS_BUCKET_NAME,
             output_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_bikes.csv",
             mode="capacity",
             date_time=current_full_date
@@ -57,8 +58,8 @@ def extract_transform_load(request):
 
         ingest_data(
             input_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_bikes.csv", 
-            bucket_name=BUCKET_NAME,
-            project_id=PROJECT_ID,
+            GCS_BUCKET_NAME=GCS_BUCKET_NAME,
+            GCP_PROJECT_ID=GCP_PROJECT_ID,
             dataset="publibike", 
             table="capacity", 
             mode="capacity"

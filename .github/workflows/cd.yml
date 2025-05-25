@@ -11,6 +11,7 @@ env:
   GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
   GCP_PROJECT_NUMBER: ${{ vars.GCP_PROJECT_NUMBER }}
   GCP_REGION: ${{ vars.GCP_REGION }}
+  GCS_BUCKET_NAME: ${{ vars.GCS_BUCKET_NAME }}
   SERVICE_ACCOUNT_RUNTIME: ${{ vars.SERVICE_ACCOUNT_RUNTIME }}
   SERVICE_ACCOUNT_GH: ${{ vars.SERVICE_ACCOUNT_GH }}
   WIF_POOL_ID: ${{ vars.WIF_POOL_ID }} # Workload Identity Federation Pool
@@ -54,3 +55,5 @@ jobs:
         --log-http \
         --run-service-account=${{ env.SERVICE_ACCOUNT_RUNTIME }} \
         --build-service-account=projects/${{ env.GCP_PROJECT_ID }}/serviceAccounts/${{ env.SERVICE_ACCOUNT_GH }}
+        --set-env-vars GCS_BUCKET_NAME=${{ env.GCS_BUCKET_NAME }} \
+        --set-env-vars GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }}
