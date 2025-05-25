@@ -136,20 +136,20 @@ def ingest_data(input_path, bucket_name, project_id, dataset, table, mode):
             # Specify the type of columns whose type cannot be auto-detected. For
             # example the "title" column uses pandas dtype "object", so its
             # data type is ambiguous.
-            bigquery.SchemaField("station_id", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("latitude", bigquery.enums.SqlTypeNames.FLOAT64),
-            bigquery.SchemaField("longitude", bigquery.enums.SqlTypeNames.FLOAT64),
-            bigquery.SchemaField("state_id", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("state_name", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("name", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("address", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("zip", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("city", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("network_id", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("network_name", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("is_virtual_station", bigquery.enums.SqlTypeNames.BOOL),
-            bigquery.SchemaField("capacity", bigquery.enums.SqlTypeNames.INT64),
-            bigquery.SchemaField("ingestion_time", bigquery.enums.SqlTypeNames.TIMESTAMP)
+            bigquery.SchemaField(name="station_id", field_type=bigquery.enums.SqlTypeNames.STRING, mode="REQUIRED"),
+            bigquery.SchemaField(name="latitude", field_type=bigquery.enums.SqlTypeNames.FLOAT64, mode="NULLABLE"),
+            bigquery.SchemaField(name="longitude", field_type=bigquery.enums.SqlTypeNames.FLOAT64, mode="NULLABLE"),
+            bigquery.SchemaField(name="state_id", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="state_name", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="name", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="address", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="zip", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="city", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="network_id", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="network_name",field_type= bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="is_virtual_station", field_type=bigquery.enums.SqlTypeNames.BOOL, mode="NULLABLE"),
+            bigquery.SchemaField(name="capacity", field_type=bigquery.enums.SqlTypeNames.INT64, mode="NULLABLE"),
+            bigquery.SchemaField(name="ingestion_time", field_type=bigquery.enums.SqlTypeNames.TIMESTAMP, mode="REQUIRED")
         ],
         write_disposition="WRITE_APPEND",
         )
@@ -181,14 +181,14 @@ def ingest_data(input_path, bucket_name, project_id, dataset, table, mode):
             # Specify the type of columns whose type cannot be auto-detected. For
             # example the "title" column uses pandas dtype "object", so its
             # data type is ambiguous.
-            bigquery.SchemaField("station_id", bigquery.enums.SqlTypeNames.STRING),
+            bigquery.SchemaField(name="station_id", field_type=bigquery.enums.SqlTypeNames.STRING, mode="REQUIRED"),
             # Indexes are written if included in the schema by name.
-            bigquery.SchemaField("vehicle_id", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("vehicle_name", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("vehicle_ebike_battery_level", bigquery.enums.SqlTypeNames.FLOAT64),
-            bigquery.SchemaField("vehicle_type_id", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("vehicle_type_name", bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField("ingestion_time", bigquery.enums.SqlTypeNames.TIMESTAMP)
+            bigquery.SchemaField(name="vehicle_id", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="vehicle_name", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="vehicle_ebike_battery_level", field_type=bigquery.enums.SqlTypeNames.FLOAT64, mode="NULLABLE"),
+            bigquery.SchemaField(name="vehicle_type_id", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="vehicle_type_name", field_type=bigquery.enums.SqlTypeNames.STRING, mode="NULLABLE"),
+            bigquery.SchemaField(name="ingestion_time", field_type=bigquery.enums.SqlTypeNames.TIMESTAMP, mode="REQUIRED")
         ],
         write_disposition="WRITE_APPEND",
         )
