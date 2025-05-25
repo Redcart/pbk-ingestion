@@ -195,7 +195,7 @@ def ingest_data(input_path, bucket_name, project_id, dataset, table, mode):
 
     job = client.load_table_from_dataframe(
        dataframe= df_transformed, 
-       table=table_id, 
+       destination=table_id, 
        job_config=job_config
     )  # Make an API request.
     job.result() # Wait for the job to complete.
