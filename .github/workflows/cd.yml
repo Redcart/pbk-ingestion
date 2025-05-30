@@ -52,7 +52,7 @@ jobs:
     - name: Copy source code to Cloud Function directory
       run: |
         mkdir -p cloud_function_etl
-        cp -r src/* cloud_function_etl/src
+        cp -r src/ cloud_function_etl/src
         cp main.py cloud_function_etl/
         uv pip freeze > cloud_function_etl/requirements.txt
 
