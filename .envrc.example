@@ -1,0 +1,11 @@
+# Google Cloud Project ID
+export GCP_PROJECT_ID=
+
+# Google Cloud Storage Bucket Name
+export GCS_BUCKET_NAME=
+
+# BigQuery Dataset Name
+export DATASET=
+
+# API URL for data extraction
+export API_URL="https://api.publibike.ch/v1/public/partner/stations"

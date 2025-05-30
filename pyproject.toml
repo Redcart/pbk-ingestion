@@ -1,0 +1,17 @@
+[project]
+name = "pbk-ingest"
+version = "0.1.0"
+description = "Python package for Publibike project - Ingestion part"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fsspec>=2025.5.1",
+    "gcsfs>=2025.5.1",
+    "google-cloud-bigquery>=3.33.0",
+    "google-cloud-storage>=3.1.0",
+    "pandas>=2.2.3",
+    "pandas-gbq>=0.29.0",
+    "pyarrow>=20.0.0",
+    "pytz>=2025.2",
+    "requests>=2.32.3",
+]

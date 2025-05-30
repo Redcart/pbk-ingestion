@@ -4,7 +4,7 @@ on:
     push:
         branches:
             - "prd"
-            - "uat"
+            - "stg"
             - "dev"
 
 env:
@@ -13,12 +13,14 @@ env:
   GCP_REGION: ${{ vars.GCP_REGION }}
   GCS_BUCKET_NAME: ${{ vars.GCS_BUCKET_NAME }}
   DATASET: ${{ vars.DATASET }}
+  API_URL: ${{ vars.API_URL }}
   SERVICE_ACCOUNT_RUNTIME: ${{ vars.SERVICE_ACCOUNT_RUNTIME }}
   SERVICE_ACCOUNT_GH: ${{ vars.SERVICE_ACCOUNT_GH }}
   WIF_POOL_ID: ${{ vars.WIF_POOL_ID }} # Workload Identity Federation Pool
   WIF_POOL_PROVIDER: ${{ vars.WIF_POOL_PROVIDER }} # Workload Identity Federation Provider
   PROJECT: ${{ vars.PROJECT }}
-  STREAM: ${{ VARS.STREAM }}
+  STREAM: ${{ vars.STREAM }}
+  UV_VERSION: 0.7.8 # Version of uv to install
 
 jobs:
   etl:
@@ -41,12 +43,25 @@ jobs:
         service_account: ${{ env.SERVICE_ACCOUNT_GH }}
         access_token_lifetime: 300s
 
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        # Install a specific version of uv.
+        version: ${{ env.UV_VERSION }}
+
+    - name: Copy source code to Cloud Function directory
+      run: |
+        mkdir -p cloud_function_etl
+        cp -r src/* cloud_function_etl/
+        cp main.py cloud_function_etl/
+        uv pip freeze > cloud_function_etl/equirements.txt
+
     - name: Deploy Cloud Function
       run: |
         gcloud functions deploy ${{ env.PROJECT }}-${{ env.STREAM }} \
         --gen2 \
         --region=${{ env.GCP_REGION }} \
-        --runtime=python310 \
+        --runtime=python313 \
         --memory=1G \
         --source=cloud_function_etl \
         --trigger-http \
@@ -58,4 +73,5 @@ jobs:
         --build-service-account=projects/${{ env.GCP_PROJECT_ID }}/serviceAccounts/${{ env.SERVICE_ACCOUNT_GH }} \
         --set-env-vars GCS_BUCKET_NAME=${{ env.GCS_BUCKET_NAME }} \
         --set-env-vars GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }} \
-        --set-env-vars DATASET=${{ env.DATASET }}
+        --set-env-vars DATASET=${{ env.DATASET }} \
+        --set-env-vars API_URL=${{ env.API_URL }}
