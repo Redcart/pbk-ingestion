@@ -20,7 +20,7 @@ def extract_transform_load(request: dict) -> tuple[dict, int]:
         tuple[dict, int]: A response indicating the status of the ETL process and HTTP status code.
     """
     # Extract mode from the request
-    mode = json.loads(request.get("data").decode()).get("mode")
+    mode = json.loads(request.data.decode()).get("mode")
     logging.info(f"Received request with mode: {mode}")
 
     if mode not in ["stations", "capacity"]:
