@@ -54,7 +54,7 @@ jobs:
         mkdir -p cloud_function_etl
         cp -r src/* cloud_function_etl/
         cp main.py cloud_function_etl/
-        uv pip freeze > cloud_function_etl/equirements.txt
+        uv pip freeze > cloud_function_etl/requirements.txt
 
     - name: Deploy Cloud Function
       run: |
