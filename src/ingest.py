@@ -75,10 +75,16 @@ class StationsIngester(Ingester):
                 bigquery.SchemaField("zip", bigquery.enums.SqlTypeNames.STRING),
                 bigquery.SchemaField("city", bigquery.enums.SqlTypeNames.STRING),
                 bigquery.SchemaField("network_id", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("network_name", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("is_virtual_station", bigquery.enums.SqlTypeNames.BOOL),
+                bigquery.SchemaField(
+                    "network_name", bigquery.enums.SqlTypeNames.STRING
+                ),
+                bigquery.SchemaField(
+                    "is_virtual_station", bigquery.enums.SqlTypeNames.BOOL
+                ),
                 bigquery.SchemaField("capacity", bigquery.enums.SqlTypeNames.INT64),
-                bigquery.SchemaField("ingestion_time", bigquery.enums.SqlTypeNames.TIMESTAMP),
+                bigquery.SchemaField(
+                    "ingestion_time", bigquery.enums.SqlTypeNames.TIMESTAMP
+                ),
             ],
             write_disposition="WRITE_APPEND",
         )
@@ -111,7 +117,9 @@ class StationsIngester(Ingester):
         }
 
         df = pd.read_csv(filepath_or_buffer=f"gs://{input_path}", dtype=dtype)
-        df["ingestion_time"] = pd.to_datetime(df["ingestion_time"], format="%Y-%m-%d %H:%M:%S")
+        df["ingestion_time"] = pd.to_datetime(
+            df["ingestion_time"], format="%Y-%m-%d %H:%M:%S"
+        )
         return df
 
 
@@ -125,11 +133,21 @@ class CapacityIngester(Ingester):
             schema=[
                 bigquery.SchemaField("station_id", bigquery.enums.SqlTypeNames.STRING),
                 bigquery.SchemaField("vehicle_id", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("vehicle_name", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("vehicle_ebike_battery_level", bigquery.enums.SqlTypeNames.FLOAT64),
-                bigquery.SchemaField("vehicle_type_id", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("vehicle_type_name", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("ingestion_time", bigquery.enums.SqlTypeNames.TIMESTAMP),
+                bigquery.SchemaField(
+                    "vehicle_name", bigquery.enums.SqlTypeNames.STRING
+                ),
+                bigquery.SchemaField(
+                    "vehicle_ebike_battery_level", bigquery.enums.SqlTypeNames.FLOAT64
+                ),
+                bigquery.SchemaField(
+                    "vehicle_type_id", bigquery.enums.SqlTypeNames.STRING
+                ),
+                bigquery.SchemaField(
+                    "vehicle_type_name", bigquery.enums.SqlTypeNames.STRING
+                ),
+                bigquery.SchemaField(
+                    "ingestion_time", bigquery.enums.SqlTypeNames.TIMESTAMP
+                ),
             ],
             write_disposition="WRITE_APPEND",
         )
@@ -155,7 +173,9 @@ class CapacityIngester(Ingester):
         }
 
         df = pd.read_csv(filepath_or_buffer=f"gs://{input_path}", dtype=dtype)
-        df["ingestion_time"] = pd.to_datetime(df["ingestion_time"], format="%Y-%m-%d %H:%M:%S")
+        df["ingestion_time"] = pd.to_datetime(
+            df["ingestion_time"], format="%Y-%m-%d %H:%M:%S"
+        )
         return df
 
 
@@ -201,10 +221,14 @@ class Ingest:
         job_config = ingester.get_job_config()
 
         # Load data into BigQuery
-        job = client.load_table_from_dataframe(df_transformed, table_id, job_config=job_config)
+        job = client.load_table_from_dataframe(
+            df_transformed, table_id, job_config=job_config
+        )
         job.result()  # Wait for the job to complete
 
         table = client.get_table(table_id)  # Make an API request
-        logging.info(f"Loaded {table.num_rows} rows and {len(table.schema)} columns to {table_id}")
+        logging.info(
+            f"Loaded {table.num_rows} rows and {len(table.schema)} columns to {table_id}"
+        )
 
-        return 200 # HTTP status code for success
+        return 200  # HTTP status code for success

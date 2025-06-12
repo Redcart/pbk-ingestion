@@ -11,7 +11,9 @@ class ETL:
     Class to handle the ETL process for different modes.
     """
 
-    def __init__(self, mode: str, url: str, bucket_name: str, project_id: str, dataset: str):
+    def __init__(
+        self, mode: str, url: str, bucket_name: str, project_id: str, dataset: str
+    ):
         """
         Initializes the ETL class.
 
@@ -34,7 +36,7 @@ class ETL:
         """
         Initializes the date-related attributes for the ETL process.
         """
-        now = datetime.now(pytz.timezone('UTC'))
+        now = datetime.now(pytz.timezone("UTC"))
         self.current_full_date = now.strftime("%Y-%m-%d %H:%M:00")
         self.current_ymd = now.strftime("%Y-%m-%d")
         self.current_hour = now.strftime("%H:00:00")
@@ -47,23 +49,48 @@ class ETL:
         """
 
         if self.mode not in ["stations", "capacity"]:
-            logging.error("Invalid mode specified. Please use 'stations' or 'capacity'.")
-            raise ValueError("Invalid mode specified. Please use 'stations' or 'capacity'.")
+            logging.error(
+                "Invalid mode specified. Please use 'stations' or 'capacity'."
+            )
+            raise ValueError(
+                "Invalid mode specified. Please use 'stations' or 'capacity'."
+            )
         if not self.url:
             logging.error("API URL is not set. Please provide a valid API URL.")
             raise ValueError("API URL is not set. Please provide a valid API URL.")
         if not self.project_id:
-            logging.error("Project ID is not set. Please provide a valid Google Cloud project ID.")
-            raise ValueError("Project ID is not set. Please provide a valid Google Cloud project ID.")
+            logging.error(
+                "Project ID is not set. Please provide a valid Google Cloud project ID."
+            )
+            raise ValueError(
+                "Project ID is not set. Please provide a valid Google Cloud project ID."
+            )
         if not self.dataset:
-            logging.error("Dataset is not set. Please provide a valid BigQuery dataset name.")
-            raise ValueError("Dataset is not set. Please provide a valid BigQuery dataset name.")
+            logging.error(
+                "Dataset is not set. Please provide a valid BigQuery dataset name."
+            )
+            raise ValueError(
+                "Dataset is not set. Please provide a valid BigQuery dataset name."
+            )
         if not self.bucket_name:
-            logging.error("Bucket name is not set. Please provide a valid Google Cloud Storage bucket name.")
-            raise ValueError("Bucket name is not set. Please provide a valid Google Cloud Storage bucket name.")
-        if not self.current_full_date or not self.current_ymd or not self.current_hour or not self.current_minute:
-            logging.error("Date attributes could not be initialized. Please check the system time and timezone settings.")
-            raise ValueError("Date attributes could not be initialized. Please check the system time and timezone settings.")
+            logging.error(
+                "Bucket name is not set. Please provide a valid Google Cloud Storage bucket name."
+            )
+            raise ValueError(
+                "Bucket name is not set. Please provide a valid Google Cloud Storage bucket name."
+            )
+        if (
+            not self.current_full_date
+            or not self.current_ymd
+            or not self.current_hour
+            or not self.current_minute
+        ):
+            logging.error(
+                "Date attributes could not be initialized. Please check the system time and timezone settings."
+            )
+            raise ValueError(
+                "Date attributes could not be initialized. Please check the system time and timezone settings."
+            )
 
     def extract_data(self):
         """
@@ -72,7 +99,7 @@ class ETL:
         extract = Extract(
             url=self.url,
             bucket_name=self.bucket_name,
-            output_path=f"test/raw_data/{self.current_ymd}/{self.current_hour}/data.json"
+            output_path=f"test/raw_data/{self.current_ymd}/{self.current_hour}/data.json",
         )
         extract.get_data()
 
@@ -85,7 +112,7 @@ class ETL:
             input_path=f"raw_data/{self.current_ymd}/{self.current_hour}/data.json",
             output_path=f"transformed_data/{self.current_ymd}/{self.current_hour}/{self.current_minute}_transformed_data_{self.mode}.csv",
             mode=self.mode,
-            date_time=self.current_full_date
+            date_time=self.current_full_date,
         )
         transform.transform_data()
 
@@ -97,11 +124,11 @@ class ETL:
             project_id=self.project_id,
             dataset=self.dataset,
             table="stations" if self.mode == "stations" else "capacity",
-            bucket_name=self.bucket_name
+            bucket_name=self.bucket_name,
         )
         ingest.ingest_data(
             input_path=f"{self.bucket_name}/transformed_data/{self.current_ymd}/{self.current_hour}/{self.current_minute}_transformed_data_{self.mode}.csv",
-            mode=self.mode
+            mode=self.mode,
         )
 
     def run(self):
@@ -110,10 +137,16 @@ class ETL:
         """
         logging.info(f"Starting ETL process for mode: {self.mode}")
         self.extract_data()
-        logging.info(f"Data extracted from {self.url} and saved to GCS bucket: {self.bucket_name}")
+        logging.info(
+            f"Data extracted from {self.url} and saved to GCS bucket: {self.bucket_name}"
+        )
         if self.mode not in ["stations", "capacity"]:
-            logging.error("Invalid mode specified. Please use 'stations' or 'capacity'.")
-            raise ValueError("Invalid mode specified. Please use 'stations' or 'capacity'.")
+            logging.error(
+                "Invalid mode specified. Please use 'stations' or 'capacity'."
+            )
+            raise ValueError(
+                "Invalid mode specified. Please use 'stations' or 'capacity'."
+            )
         logging.info(f"Transforming data for mode: {self.mode}")
         self.transform_data()
         logging.info(f"Data transformed and saved to GCS bucket: {self.bucket_name}")

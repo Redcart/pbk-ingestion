@@ -5,6 +5,7 @@ import logging
 import pandas as pd
 from google.cloud import storage
 
+
 class TransformFactory:
     """
     Factory class to create transformation objects based on the mode.
@@ -27,7 +28,9 @@ class TransformFactory:
         elif mode == "capacity":
             return CapacityTransformer(date_time)
         else:
-            raise ValueError(f"Unsupported mode: {mode}. Please use stations or capacity.")
+            raise ValueError(
+                f"Unsupported mode: {mode}. Please use stations or capacity."
+            )
 
 
 class Transformer(ABC):
@@ -79,9 +82,20 @@ class StationsTransformer(Transformer):
 
         for station in raw_data.get("stations", []):
             keys = [
-                "station_id", "latitude", "longitude", "state_id", "state_name", "name",
-                "address", "zip", "city", "network_id", "network_name", "is_virtual_station",
-                "capacity", "ingestion_time"
+                "station_id",
+                "latitude",
+                "longitude",
+                "state_id",
+                "state_name",
+                "name",
+                "address",
+                "zip",
+                "city",
+                "network_id",
+                "network_name",
+                "is_virtual_station",
+                "capacity",
+                "ingestion_time",
             ]
 
             values = [
@@ -98,15 +112,19 @@ class StationsTransformer(Transformer):
                 station.get("network").get("name"),
                 station.get("is_virtual_station"),
                 station.get("capacity"),
-                self.date_time
+                self.date_time,
             ]
 
             data_one_station = {key: value for key, value in zip(keys, values)}
             list_of_stations.append(data_one_station)
 
         df_all_stations = pd.DataFrame.from_records(data=list_of_stations)
-        df_all_stations.to_csv(path_or_buf=f"gs://{bucket_name}/{output_path}", index=False)
-        logging.info(f"Transformed station data written at gs://{bucket_name}/{output_path}")
+        df_all_stations.to_csv(
+            path_or_buf=f"gs://{bucket_name}/{output_path}", index=False
+        )
+        logging.info(
+            f"Transformed station data written at gs://{bucket_name}/{output_path}"
+        )
         return 200
 
 
@@ -130,8 +148,13 @@ class CapacityTransformer(Transformer):
         for station in raw_data.get("stations", []):
             for bike in station.get("vehicles", []):
                 keys = [
-                    "station_id", "vehicle_id", "vehicle_name", "vehicle_ebike_battery_level",
-                    "vehicle_type_id", "vehicle_type_name", "ingestion_time"
+                    "station_id",
+                    "vehicle_id",
+                    "vehicle_name",
+                    "vehicle_ebike_battery_level",
+                    "vehicle_type_id",
+                    "vehicle_type_name",
+                    "ingestion_time",
                 ]
 
                 values = [
@@ -141,15 +164,19 @@ class CapacityTransformer(Transformer):
                     bike.get("ebike_battery_level"),
                     bike.get("type").get("id"),
                     bike.get("type").get("name"),
-                    self.date_time
+                    self.date_time,
                 ]
 
                 data_one_bike = {key: value for key, value in zip(keys, values)}
                 list_of_stations_with_capacity.append(data_one_bike)
 
         df_all_bikes = pd.DataFrame.from_records(data=list_of_stations_with_capacity)
-        df_all_bikes.to_csv(path_or_buf=f"gs://{bucket_name}/{output_path}", index=False)
-        logging.info(f"Transformed capacity data written at gs://{bucket_name}/{output_path}")
+        df_all_bikes.to_csv(
+            path_or_buf=f"gs://{bucket_name}/{output_path}", index=False
+        )
+        logging.info(
+            f"Transformed capacity data written at gs://{bucket_name}/{output_path}"
+        )
 
         return 200
 
@@ -160,12 +187,12 @@ class Transform:
     """
 
     def __init__(
-            self,
-            bucket_name: str,
-            input_path: str,
-            output_path: str,
-            mode: str,
-            date_time: str
+        self,
+        bucket_name: str,
+        input_path: str,
+        output_path: str,
+        mode: str,
+        date_time: str,
     ):
         """
         Initializes the Transform class with the input path, GCS bucket name, output path, mode, and date time.
@@ -198,14 +225,13 @@ class Transform:
             raw_data = json.load(file)
 
         transformer = TransformFactory.get_transformer(
-            mode=self.mode,
-            date_time=self.date_time
+            mode=self.mode, date_time=self.date_time
         )
 
         transformer.transform(
             raw_data=raw_data,
             bucket_name=self.bucket_name,
-            output_path=self.output_path
+            output_path=self.output_path,
         )
 
         return 200

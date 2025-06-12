@@ -9,6 +9,7 @@ GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME")
 DATASET = os.getenv("DATASET")
 API_URL = os.getenv("API_URL", "https://api.publibike.ch/v1/public/partner/stations")
 
+
 def extract_transform_load(request: dict) -> tuple[dict, int]:
     """
     Cloud Function entry point for the ETL process.
@@ -27,15 +28,17 @@ def extract_transform_load(request: dict) -> tuple[dict, int]:
         logging.error("Invalid mode specified.")
         return {
             "status": "error",
-            "message": "Invalid mode specified. Please use 'stations' or 'capacity'."
+            "message": "Invalid mode specified. Please use 'stations' or 'capacity'.",
         }, 400
 
     # Validate environment variables
     if not GCS_BUCKET_NAME or not GCP_PROJECT_ID or not DATASET:
-        logging.error("Missing required environment variables. You have to set GCS_BUCKET_NAME, GCP_PROJECT_ID, and DATASET.")
+        logging.error(
+            "Missing required environment variables. You have to set GCS_BUCKET_NAME, GCP_PROJECT_ID, and DATASET."
+        )
         return {
             "status": "error",
-            "message": "Missing required environment variables."
+            "message": "Missing required environment variables.",
         }, 500
 
     # Initialize the ETL process
@@ -44,7 +47,7 @@ def extract_transform_load(request: dict) -> tuple[dict, int]:
         url=API_URL,
         bucket_name=GCS_BUCKET_NAME,
         project_id=GCP_PROJECT_ID,
-        dataset=DATASET
+        dataset=DATASET,
     )
 
     # Run the ETL process
@@ -53,19 +56,15 @@ def extract_transform_load(request: dict) -> tuple[dict, int]:
         logging.info(f"ETL process for mode {mode} completed successfully.")
         return {
             "status": "success",
-            "message": f"ETL process for mode {mode} completed successfully."
+            "message": f"ETL process for mode {mode} completed successfully.",
         }, 200
     except Exception as e:
         logging.error(f"ETL process failed: {str(e)}")
-        return {
-            "status": "error",
-            "message": f"ETL process failed: {str(e)}"
-        }, 500
+        return {"status": "error", "message": f"ETL process failed: {str(e)}"}, 500
+
 
 if __name__ == "__main__":
     # Example request for local testing
-    test_request = {
-        "data": json.dumps({"mode": "stations"}).encode('utf-8')
-    }
+    test_request = {"data": json.dumps({"mode": "stations"}).encode("utf-8")}
     response, status_code = extract_transform_load(test_request)
     print(f"Response: {response}, Status Code: {status_code}")
