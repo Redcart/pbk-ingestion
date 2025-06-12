@@ -133,7 +133,7 @@ class StationsIngester(Ingester):
                 bigquery.SchemaField(
                     name="ingestion_time",
                     field_type=bigquery.enums.SqlTypeNames.TIMESTAMP,
-                    mode="NULLABLE",
+                    mode="REQUIRED",
                 ),
             ],
             write_disposition="WRITE_APPEND",
@@ -214,7 +214,7 @@ class CapacityIngester(Ingester):
                 bigquery.SchemaField(
                     name="ingestion_time",
                     field_type=bigquery.enums.SqlTypeNames.TIMESTAMP,
-                    mode="NULLABLE",
+                    mode="REQUIRED",
                 ),
             ],
             write_disposition="WRITE_APPEND",
