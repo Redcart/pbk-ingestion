@@ -179,7 +179,7 @@ class Ingest:
         self.table = table
         self.bucket_name = bucket_name
 
-    def ingest_data(self, input_path: str, mode: str) -> str:
+    def ingest_data(self, input_path: str, mode: str) -> int:
         """
         Ingests data from a CSV file in GCS into BigQuery.
 
@@ -188,7 +188,7 @@ class Ingest:
             mode (str): The mode of ingestion ("stations" or "capacity").
 
         Returns:
-            str: HTTP status code indicating success.
+            int: HTTP status code indicating success.
         """
         # Get the appropriate ingester based on the mode
         ingester = IngestFactory.get_ingester(mode)
@@ -207,4 +207,4 @@ class Ingest:
         table = client.get_table(table_id)  # Make an API request
         logging.info(f"Loaded {table.num_rows} rows and {len(table.schema)} columns to {table_id}")
 
-        return "200"
+        return 200 # HTTP status code for success

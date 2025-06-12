@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 import json 
 import logging 
 
@@ -27,7 +27,7 @@ class TransformFactory:
         elif mode == "capacity":
             return CapacityTransformer(date_time)
         else:
-            raise ValueError(f"Unsupported mode: {mode}")
+            raise ValueError(f"Unsupported mode: {mode}. Please use stations or capacity.")
 
 
 class Transformer(ABC):
@@ -43,7 +43,8 @@ class Transformer(ABC):
             date_time (str): The date and time of the transformation.
         """
         self.date_time = date_time
-
+    
+    @abstractmethod
     def transform(self, raw_data: dict, bucket_name: str, output_path: str) -> int:
         """
         Abstract method to transform data.

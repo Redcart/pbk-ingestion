@@ -1,11 +1,11 @@
 name: 'ETL'
 
 on:
-    push:
-        branches:
-            - "prd"
-            - "stg"
-            - "dev"
+  push:
+    branches:
+    - "prd"
+    - "stg"
+    - "dev"
 
 env:
   GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
