@@ -65,25 +65,75 @@ class StationsIngester(Ingester):
     def get_job_config(self) -> bigquery.LoadJobConfig:
         return bigquery.LoadJobConfig(
             schema=[
-                bigquery.SchemaField("station_id", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("latitude", bigquery.enums.SqlTypeNames.FLOAT64),
-                bigquery.SchemaField("longitude", bigquery.enums.SqlTypeNames.FLOAT64),
-                bigquery.SchemaField("state_id", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("state_name", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("name", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("address", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("zip", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("city", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("network_id", bigquery.enums.SqlTypeNames.STRING),
                 bigquery.SchemaField(
-                    "network_name", bigquery.enums.SqlTypeNames.STRING
+                    name="station_id",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="REQUIRED",
                 ),
                 bigquery.SchemaField(
-                    "is_virtual_station", bigquery.enums.SqlTypeNames.BOOL
+                    name="latitude",
+                    field_type=bigquery.enums.SqlTypeNames.FLOAT64,
+                    mode="NULLABLE",
                 ),
-                bigquery.SchemaField("capacity", bigquery.enums.SqlTypeNames.INT64),
                 bigquery.SchemaField(
-                    "ingestion_time", bigquery.enums.SqlTypeNames.TIMESTAMP
+                    name="longitude",
+                    field_type=bigquery.enums.SqlTypeNames.FLOAT64,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="state_id",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="state_name",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="name",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="address",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="zip",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="city",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="network_id",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="network_name",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="is_virtual_station",
+                    field_type=bigquery.enums.SqlTypeNames.BOOL,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="capacity",
+                    field_type=bigquery.enums.SqlTypeNames.INT64,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="ingestion_time",
+                    field_type=bigquery.enums.SqlTypeNames.TIMESTAMP,
+                    mode="NULLABLE",
                 ),
             ],
             write_disposition="WRITE_APPEND",
@@ -131,22 +181,40 @@ class CapacityIngester(Ingester):
     def get_job_config(self) -> bigquery.LoadJobConfig:
         return bigquery.LoadJobConfig(
             schema=[
-                bigquery.SchemaField("station_id", bigquery.enums.SqlTypeNames.STRING),
-                bigquery.SchemaField("vehicle_id", bigquery.enums.SqlTypeNames.STRING),
                 bigquery.SchemaField(
-                    "vehicle_name", bigquery.enums.SqlTypeNames.STRING
+                    name="station_id",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="REQUIRED",
                 ),
                 bigquery.SchemaField(
-                    "vehicle_ebike_battery_level", bigquery.enums.SqlTypeNames.FLOAT64
+                    name="vehicle_id",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="REQUIRED",
                 ),
                 bigquery.SchemaField(
-                    "vehicle_type_id", bigquery.enums.SqlTypeNames.STRING
+                    name="vehicle_name",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
                 ),
                 bigquery.SchemaField(
-                    "vehicle_type_name", bigquery.enums.SqlTypeNames.STRING
+                    name="vehicle_ebike_battery_level",
+                    field_type=bigquery.enums.SqlTypeNames.FLOAT64,
+                    mode="NULLABLE",
                 ),
                 bigquery.SchemaField(
-                    "ingestion_time", bigquery.enums.SqlTypeNames.TIMESTAMP
+                    name="vehicle_type_id",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="vehicle_type_name",
+                    field_type=bigquery.enums.SqlTypeNames.STRING,
+                    mode="NULLABLE",
+                ),
+                bigquery.SchemaField(
+                    name="ingestion_time",
+                    field_type=bigquery.enums.SqlTypeNames.TIMESTAMP,
+                    mode="NULLABLE",
                 ),
             ],
             write_disposition="WRITE_APPEND",
