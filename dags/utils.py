@@ -1,6 +1,6 @@
 from datetime import datetime
-import json 
-import logging 
+import json
+import logging
 
 import pytz
 import requests
@@ -67,7 +67,7 @@ def transform_data(input_path, bucket_name, output_path, mode, date_time):
         logging.info(f"Transformed data written at gs://{bucket_name}/{output_path}")
 
     elif mode == "capacity":
-        
+
         list_of_stations_with_capacity = list()
 
         for station in range(len(raw_data.get("stations"))):
@@ -93,7 +93,7 @@ def transform_data(input_path, bucket_name, output_path, mode, date_time):
         logging.info(df_all_bikes.info())
         df_all_bikes.to_csv(path_or_buf=f"gs://{bucket_name}/{output_path}", index=False)
         logging.info(f"Transformed data written at gs://{bucket_name}/{output_path}")
-    
+
     return "200"
 
 
@@ -124,9 +124,9 @@ def ingest_data(input_path, bucket_name, project_id, dataset, table, mode):
                 "ingestion_time": str
                 }
             )
-        
+
         df_transformed["ingestion_time"] = pd.to_datetime(
-            df_transformed["ingestion_time"], 
+            df_transformed["ingestion_time"],
             format="%Y-%m-%d %H:%M:%S"
         )
 
@@ -172,7 +172,7 @@ def ingest_data(input_path, bucket_name, project_id, dataset, table, mode):
             )
 
         df_transformed["ingestion_time"] = pd.to_datetime(
-            df_transformed["ingestion_time"], 
+            df_transformed["ingestion_time"],
             format="%Y-%m-%d %H:%M:%S"
         )
 
@@ -216,7 +216,7 @@ def extract_transform_load(url, project_id, bucket_name, mode):
     current_minute = now.strftime("%H:%M:00")
 
     get_data(
-        url=url, 
+        url=url,
         bucket_name=bucket_name,
         output_path=f"raw_data/{current_ymd}/{current_hour}/data.json"
     )
@@ -232,11 +232,11 @@ def extract_transform_load(url, project_id, bucket_name, mode):
         )
 
         ingest_data(
-            input_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_stations.csv", 
+            input_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_stations.csv",
             bucket_name=bucket_name,
             project_id=project_id,
-            dataset="publibike_dev", 
-            table="stations", 
+            dataset="publibike_dev",
+            table="stations",
             mode="stations"
         )
 
@@ -251,11 +251,11 @@ def extract_transform_load(url, project_id, bucket_name, mode):
         )
 
         ingest_data(
-            input_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_bikes.csv", 
+            input_path=f"transformed_data/{current_ymd}/{current_hour}/{current_minute}_transformed_data_bikes.csv",
             bucket_name=bucket_name,
             project_id=project_id,
-            dataset="publibike_dev", 
-            table="capacity", 
+            dataset="publibike_dev",
+            table="capacity",
             mode="capacity"
         )
 

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-import json 
-import logging 
+import json
+import logging
 
 import pandas as pd
 from google.cloud import storage
@@ -43,7 +43,7 @@ class Transformer(ABC):
             date_time (str): The date and time of the transformation.
         """
         self.date_time = date_time
-    
+
     @abstractmethod
     def transform(self, raw_data: dict, bucket_name: str, output_path: str) -> int:
         """
@@ -103,7 +103,7 @@ class StationsTransformer(Transformer):
 
             data_one_station = {key: value for key, value in zip(keys, values)}
             list_of_stations.append(data_one_station)
-        
+
         df_all_stations = pd.DataFrame.from_records(data=list_of_stations)
         df_all_stations.to_csv(path_or_buf=f"gs://{bucket_name}/{output_path}", index=False)
         logging.info(f"Transformed station data written at gs://{bucket_name}/{output_path}")
@@ -160,11 +160,11 @@ class Transform:
     """
 
     def __init__(
-            self, 
-            bucket_name: str, 
+            self,
+            bucket_name: str,
             input_path: str,
-            output_path: str, 
-            mode: str, 
+            output_path: str,
+            mode: str,
             date_time: str
     ):
         """
@@ -198,13 +198,13 @@ class Transform:
             raw_data = json.load(file)
 
         transformer = TransformFactory.get_transformer(
-            mode=self.mode, 
+            mode=self.mode,
             date_time=self.date_time
         )
 
         transformer.transform(
-            raw_data=raw_data, 
-            bucket_name=self.bucket_name, 
+            raw_data=raw_data,
+            bucket_name=self.bucket_name,
             output_path=self.output_path
         )
 

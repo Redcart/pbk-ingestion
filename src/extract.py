@@ -1,4 +1,4 @@
-import logging 
+import logging
 
 import requests
 from google.cloud import storage
@@ -15,10 +15,10 @@ class Extract:
     """
 
     def __init__(
-            self, 
+            self,
             url: str,
-            bucket_name: str, 
-            output_path: str    
+            bucket_name: str,
+            output_path: str
     ):
         """
         Initializes the Extract class with the API URL, GCS bucket name, and output path.
@@ -31,7 +31,7 @@ class Extract:
         self.url: str = url
         self.bucket_name: str = bucket_name
         self.output_path: str = output_path
-        
+
 
     def get_data(self) -> str:
         """
@@ -47,11 +47,11 @@ class Extract:
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name=self.bucket_name)
         blob = bucket.blob(blob_name=self.output_path)
-        
+
         # Upload the data to GCS
         blob.upload_from_string(data=publibike_data.text)
-        
-        # Log the output path         
+
+        # Log the output path
         logging.info(f"Data written at: {self.output_path}")
 
         return str(publibike_data.status_code)

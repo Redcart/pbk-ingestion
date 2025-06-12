@@ -45,10 +45,10 @@ class ETL:
         Validates the required environment variables for the ETL process.
         Raises an error if any required variable is missing.
         """
-       
+
         if self.mode not in ["stations", "capacity"]:
             logging.error("Invalid mode specified. Please use 'stations' or 'capacity'.")
-            raise ValueError("Invalid mode specified. Please use 'stations' or 'capacity'.")    
+            raise ValueError("Invalid mode specified. Please use 'stations' or 'capacity'.")
         if not self.url:
             logging.error("API URL is not set. Please provide a valid API URL.")
             raise ValueError("API URL is not set. Please provide a valid API URL.")
@@ -60,7 +60,7 @@ class ETL:
             raise ValueError("Dataset is not set. Please provide a valid BigQuery dataset name.")
         if not self.bucket_name:
             logging.error("Bucket name is not set. Please provide a valid Google Cloud Storage bucket name.")
-            raise ValueError("Bucket name is not set. Please provide a valid Google Cloud Storage bucket name.")    
+            raise ValueError("Bucket name is not set. Please provide a valid Google Cloud Storage bucket name.")
         if not self.current_full_date or not self.current_ymd or not self.current_hour or not self.current_minute:
             logging.error("Date attributes could not be initialized. Please check the system time and timezone settings.")
             raise ValueError("Date attributes could not be initialized. Please check the system time and timezone settings.")

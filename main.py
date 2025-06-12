@@ -61,7 +61,7 @@ def extract_transform_load(request: dict) -> tuple[dict, int]:
             "status": "error",
             "message": f"ETL process failed: {str(e)}"
         }, 500
-    
+
 if __name__ == "__main__":
     # Example request for local testing
     test_request = {
