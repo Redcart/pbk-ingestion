@@ -99,7 +99,7 @@ class ETL:
         extract = Extract(
             url=self.url,
             bucket_name=self.bucket_name,
-            output_path=f"test/raw_data/{self.current_ymd}/{self.current_hour}/data.json",
+            output_path=f"raw_data/{self.current_ymd}/{self.current_hour}/data.json",
         )
         extract.get_data()
 
