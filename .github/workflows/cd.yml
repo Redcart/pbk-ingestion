@@ -3,7 +3,6 @@ name: 'Deploy ETL to Google Cloud Functions'
 on:
   push:
     branches:
-    - "prd"
     - "stg"
     - "dev"
 
@@ -25,7 +24,7 @@ env:
 jobs:
 
   pre-commit:
-    environment: dev
+    environment: ${{ github.ref }}
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
@@ -49,7 +48,7 @@ jobs:
       run: make pre-commit
 
   tests:
-    environment: dev
+    environment: ${{ github.ref }}
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
@@ -72,7 +71,7 @@ jobs:
       run: make tests
 
   etl:
-    environment: dev
+    environment: ${{ github.ref }}
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
