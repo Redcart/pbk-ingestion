@@ -1,12 +1,11 @@
-name: 'Deploy ETL to Google Cloud Functions'
+name: 'Release to production ETL to Google Cloud Functions'
 
 on:
   push:
-    branches:
-    - "stg"
-    - "dev"
+    tags: [ 'v*.*.*' ]
 
 env:
+  TAG: ${{ github.ref_name }} # The tag name, e.g., v1.0.0
   GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
   GCP_PROJECT_NUMBER: ${{ vars.GCP_PROJECT_NUMBER }}
   GCP_REGION: ${{ vars.GCP_REGION }}
@@ -24,7 +23,7 @@ env:
 jobs:
 
   pre-commit:
-    environment: ${{ github.ref_name }}
+    environment: dev
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
@@ -48,7 +47,7 @@ jobs:
       run: make pre-commit
 
   tests:
-    environment: ${{ github.ref_name }}
+    environment: dev
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
@@ -71,7 +70,7 @@ jobs:
       run: make tests
 
   etl:
-    environment: ${{ github.ref_name }}
+    environment: dev
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
@@ -122,4 +121,5 @@ jobs:
         --set-env-vars GCS_BUCKET_NAME=${{ env.GCS_BUCKET_NAME }} \
         --set-env-vars GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }} \
         --set-env-vars DATASET=${{ env.DATASET }} \
-        --set-env-vars API_URL=${{ env.API_URL }}
+        --set-env-vars API_URL=${{ env.API_URL }} \
+        --set-env-vars TAG=${{ env.TAG }}
