@@ -24,7 +24,7 @@ env:
 jobs:
 
   pre-commit:
-    environment: ${{ github.ref }}
+    environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
@@ -48,7 +48,7 @@ jobs:
       run: make pre-commit
 
   tests:
-    environment: ${{ github.ref }}
+    environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
@@ -71,7 +71,7 @@ jobs:
       run: make tests
 
   etl:
-    environment: ${{ github.ref }}
+    environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
