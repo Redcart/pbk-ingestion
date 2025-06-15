@@ -128,7 +128,7 @@ class ETL:
             bucket_name=self.bucket_name,
         )
         ingest.ingest_data(
-            input_path=f"{self.bucket_name}/{self.mode}/transformed_data/{self.current_ymd}/{self.current_hour}/{self.current_minute}/data.csv",
+            input_path=f"{self.mode}/transformed_data/{self.current_ymd}/{self.current_minute}/data.csv",
             mode=self.mode,
         )
 
