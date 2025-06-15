@@ -14,7 +14,7 @@ class Extract:
         output_path (str): The path within the GCS bucket to store the data.
     """
 
-    def __init__(self, url: str, bucket_name: str, output_path: str):
+    def __init__(self, url: str, bucket_name: str, mode: str, output_path: str):
         """
         Initializes the Extract class with the API URL, GCS bucket name, and output path.
 
@@ -25,6 +25,7 @@ class Extract:
         """
         self.url: str = url
         self.bucket_name: str = bucket_name
+        self.mode: str = mode
         self.output_path: str = output_path
 
     def get_data(self) -> str:
@@ -42,12 +43,12 @@ class Extract:
 
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name=self.bucket_name)
-        blob = bucket.blob(blob_name=self.output_path)
+        blob = bucket.blob(blob_name=f"{self.mode}/{self.output_path}")
 
         # Upload the data to GCS
         blob.upload_from_string(data=publibike_data.text)
 
         # Log the output path
-        logging.info(f"Data written at: {self.output_path}")
+        logging.info(f"Data written at: {self.mode}/{self.output_path}")
 
         return str(publibike_data.status_code)
