@@ -107,7 +107,7 @@ jobs:
       run: |
         mkdir -p cloud_function_${{ matrix.cloud_function }}
         cp -r src/ cloud_function_${{ matrix.cloud_function }}/src
-        cp main_${{ matrix.cloud_function }}.py cloud_function_${{ matrix.cloud_function }}/
+        mv main_${{ matrix.cloud_function }}.py cloud_function_${{ matrix.cloud_function }}/main.py
         uv export --no-hashes --no-header --no-annotate --format requirements.txt > cloud_function_${{ matrix.cloud_function }}/requirements.txt
 
     - name: Deploy Cloud Function
