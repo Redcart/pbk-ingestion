@@ -43,12 +43,12 @@ class Extract:
 
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name=self.bucket_name)
-        blob = bucket.blob(blob_name=f"{self.mode}/{self.output_path}")
+        blob = bucket.blob(blob_name=self.output_path)
 
         # Upload the data to GCS
         blob.upload_from_string(data=publibike_data.text)
 
         # Log the output path
-        logging.info(f"Data written at: {self.mode}/{self.output_path}")
+        logging.info(f"Data written at: {self.output_path}")
 
         return str(publibike_data.status_code)
