@@ -76,6 +76,7 @@ jobs:
     strategy:
       matrix:
         cloud_function: [extract, transform, load]
+        trigger: [http, 'topic ${{ env.PUBSUB_TOPIC_TRANSFORM }}', 'topic ${{ env.PUBSUB_TOPIC_INGEST }}']
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
@@ -118,7 +119,7 @@ jobs:
         --runtime=python313 \
         --memory=1G \
         --source=cloud_function_${{ matrix.cloud_function }} \
-        --trigger-http \
+        --trigger-${{ matrix.trigger }} \
         --entry-point=${{ matrix.cloud_function }} \
         --no-allow-unauthenticated \
         --ingress-settings=internal-only \
