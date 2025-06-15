@@ -220,7 +220,7 @@ class CapacityIngester(Ingester):
             write_disposition="WRITE_APPEND",
         )
 
-    def read_csv(self, input_path: str) -> pd.DataFrame:
+    def read_csv(self, bucket_name: str, input_path: str) -> pd.DataFrame:
         """
         Reads and prepares the CSV file for capacity data.
 
@@ -240,7 +240,9 @@ class CapacityIngester(Ingester):
             "ingestion_time": str,
         }
 
-        df = pd.read_csv(filepath_or_buffer=f"gs://{input_path}", dtype=dtype)
+        df = pd.read_csv(
+            filepath_or_buffer=f"gs://{bucket_name}/{input_path}", dtype=dtype
+        )
         df["ingestion_time"] = pd.to_datetime(
             df["ingestion_time"], format="%Y-%m-%d %H:%M:%S"
         )
@@ -282,7 +284,9 @@ class Ingest:
         ingester = IngestFactory.get_ingester(mode)
 
         # Read and prepare the data using the ingester
-        df_transformed = ingester.read_csv(input_path)
+        df_transformed = ingester.read_csv(
+            bucket_name=self.bucket_name, input_path=input_path
+        )
 
         client = bigquery.Client(project=self.project_id)
         table_id = f"{self.project_id}.{self.dataset}.{self.table}"

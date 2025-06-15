@@ -8,6 +8,7 @@ dependencies = [
     "fsspec>=2025.5.1",
     "gcsfs>=2025.5.1",
     "google-cloud-bigquery>=3.33.0",
+    "google-cloud-pubsub>=2.30.0",
     "google-cloud-storage>=3.1.0",
     "pandas>=2.2.3",
     "pandas-gbq>=0.29.0",
