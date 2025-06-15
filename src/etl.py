@@ -100,7 +100,7 @@ class ETL:
             url=self.url,
             bucket_name=self.bucket_name,
             mode=self.mode,
-            output_path=f"{self.mode}/raw_data/{self.current_ymd}/{self.current_hour}/{self.current_minute}/data.json",
+            output_path=f"{self.mode}/raw_data/{self.current_ymd}/{self.current_minute}/data.json",
         )
         extract.get_data()
 
@@ -110,8 +110,8 @@ class ETL:
         """
         transform = Transform(
             bucket_name=self.bucket_name,
-            input_path=f"{self.mode}/raw_data/{self.current_ymd}/{self.current_hour}/{self.current_minute}/data.json",
-            output_path=f"{self.mode}/transformed_data/{self.current_ymd}/{self.current_hour}/{self.current_minute}/data.csv",
+            input_path=f"{self.mode}/raw_data/{self.current_ymd}/{self.current_minute}/data.json",
+            output_path=f"{self.mode}/transformed_data/{self.current_ymd}/{self.current_minute}/data.csv",
             mode=self.mode,
             date_time=self.current_full_date,
         )
