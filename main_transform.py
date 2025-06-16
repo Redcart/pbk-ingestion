@@ -26,7 +26,7 @@ def transform(event, context) -> tuple[dict, int]:
     print(f"Event: {event}, Context: {context}")
     print(f"Event data: {base64.b64decode(event['data']).decode('utf-8')}")
     if "data" in event:
-        message_data = base64.b64decode(event["data"]).decode("utf-8")
+        message_data = json.loads(base64.b64decode(event["data"]).decode("utf-8"))
         logging.info(f"Received message: {message_data}")
 
     # Validate environment variables
