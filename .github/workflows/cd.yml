@@ -76,7 +76,13 @@ jobs:
     strategy:
       matrix:
         cloud_function: [extract, transform, load]
-        trigger: [http, topic transformation, topic ingestion]
+        include:
+        - cloud_function: extract
+          trigger: http
+        - cloud_function: transform
+          trigger: topic transformation
+        - cloud_function: load
+          trigger: topic ingestion
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
