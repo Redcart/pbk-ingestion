@@ -24,6 +24,7 @@ def transform(event, context) -> tuple[dict, int]:
         tuple[dict, int]: A response indicating the status of the ETL process and HTTP status code.
     """
     print(f"Event: {event}, Context: {context}")
+    print(f"Event data: {base64.b64decode(event['data']).decode('utf-8')}")
     if "data" in event:
         message_data = base64.b64decode(event["data"]).decode("utf-8")
         logging.info(f"Received message: {message_data}")
