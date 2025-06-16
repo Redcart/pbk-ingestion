@@ -21,7 +21,7 @@ env:
   STREAM: ${{ vars.STREAM }}
   PUBSUB_TOPIC_INGEST: ${{ vars.PUBSUB_TOPIC_INGEST }}
   PUBSUB_TOPIC_TRANSFORM: ${{ vars.PUBSUB_TOPIC_TRANSFORM }}
-  UV_VERSION: 0.7.8 # Version of uv to install
+  UV_VERSION: 0.7.13 # Version of uv to install
 
 jobs:
 
