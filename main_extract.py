@@ -57,7 +57,9 @@ def extract(request: dict) -> tuple[dict, int]:
         output_path=f"{mode}/raw_data/{current_ymd}/{current_minute}/data.json",
     )
 
-    data = json.dumps({"mode": mode, "timestamp": now}).encode("utf-8")
+    data = json.dumps(
+        {"mode": mode, "timestamp": now.strftime("%Y-%m-%d %H:%M:%S")}
+    ).encode("utf-8")
 
     # Initialize Pub/Sub client
     publisher = pubsub_v1.PublisherClient()

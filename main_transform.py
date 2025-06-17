@@ -2,6 +2,8 @@ import os
 import json
 import logging
 import base64
+from datetime import datetime
+
 from google.cloud import pubsub_v1
 
 from src.transform import Transform
@@ -23,11 +25,13 @@ def transform(event, context) -> tuple[dict, int]:
     Returns:
         tuple[dict, int]: A response indicating the status of the ETL process and HTTP status code.
     """
-    print(f"Event: {event}, Context: {context}")
-    print(f"Event data: {base64.b64decode(event['data']).decode('utf-8')}")
+
     if "data" in event:
         message_data = json.loads(base64.b64decode(event["data"]).decode("utf-8"))
         logging.info(f"Received message: {message_data}")
+    else:
+        logging.error("No data found in the event.")
+        return {"status": "error", "message": "No data found in the event."}, 400
 
     # Validate environment variables
     if not GCS_BUCKET_NAME or not GCP_PROJECT_ID:
@@ -40,7 +44,7 @@ def transform(event, context) -> tuple[dict, int]:
         }, 500
 
     mode = message_data.get("mode")
-    timestamp = message_data.get("timestamp")
+    timestamp = datetime.strptime(message_data.get("timestamp"), "%Y-%m-%d %H:%M:%S")
     current_ymd = timestamp.strftime("%Y-%m-%d")
     current_minute = timestamp.strftime("%H:%M:00")
 
@@ -53,7 +57,9 @@ def transform(event, context) -> tuple[dict, int]:
         date_time=timestamp,
     )
 
-    data = json.dumps({"mode": mode, "timestamp": timestamp}).encode("utf-8")
+    data = json.dumps(
+        {"mode": mode, "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S")}
+    ).encode("utf-8")
 
     # Initialize Pub/Sub client
     publisher = pubsub_v1.PublisherClient()

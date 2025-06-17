@@ -22,9 +22,13 @@ def load(event, context) -> tuple[dict, int]:
     Returns:
         tuple[dict, int]: A response indicating the status of the ETL process and HTTP status code.
     """
+
     if "data" in event:
-        message_data = base64.b64decode(event["data"]).decode("utf-8")
+        message_data = json.loads(base64.b64decode(event["data"]).decode("utf-8"))
         logging.info(f"Received message: {message_data}")
+    else:
+        logging.error("No data found in the event.")
+        return {"status": "error", "message": "No data found in the event."}, 400
 
     # Validate environment variables
     if not GCS_BUCKET_NAME or not GCP_PROJECT_ID:
