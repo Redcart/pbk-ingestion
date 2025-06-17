@@ -44,7 +44,7 @@ class Ingester(ABC):
         pass
 
     @abstractmethod
-    def read_csv(self, input_path: str) -> pd.DataFrame:
+    def read_csv(self, bucket_name: str, input_path: str) -> pd.DataFrame:
         """
         Abstract method to read and prepare the CSV file.
 
