@@ -12,7 +12,7 @@ from src.transform import Transform
 GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID")
 GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME")
 API_URL = os.getenv("API_URL", "https://api.publibike.ch/v1/public/partner/stations")
-TOPIC_NAME = os.getenv("PUBSUB_TOPIC_TRANSFORM")
+TOPIC_NAME = os.getenv("PUBSUB_TOPIC_INGEST")
 
 
 def transform(event, context) -> tuple[dict, int]:
