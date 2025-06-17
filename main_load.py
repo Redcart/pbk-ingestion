@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import base64
+from datetime import datetime
 
 from src.ingest import Ingest
 
@@ -41,6 +42,9 @@ def load(event, context) -> tuple[dict, int]:
         }, 500
 
     mode = message_data.get("mode")
+    timestamp = datetime.strptime(message_data.get("timestamp"), "%Y-%m-%d %H:%M:%S")
+    current_ymd = timestamp.strftime("%Y-%m-%d")
+    current_minute = timestamp.strftime("%H:%M:00")
 
     # Initialize the ETL process
     ingestor = Ingest(
@@ -52,8 +56,10 @@ def load(event, context) -> tuple[dict, int]:
 
     # Run the Load process
     try:
-        ingestor.run()
-
+        ingestor.ingest_data(
+            input_path=f"{mode}/transformed_data/{current_ymd}/{current_minute}/data.csv",
+            mode=mode,
+        )
         logging.info(f"Extract process for mode {mode} completed successfully.")
         return {
             "status": "success",

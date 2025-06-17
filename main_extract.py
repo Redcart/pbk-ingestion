@@ -67,7 +67,7 @@ def extract(request: dict) -> tuple[dict, int]:
 
     # Run the ETL process
     try:
-        extractor.run()
+        extractor.get_data()
         future = publisher.publish(topic=topic_path, data=data)
         message_id = future.result()
 

@@ -67,7 +67,7 @@ def transform(event, context) -> tuple[dict, int]:
 
     # Run the ETL process
     try:
-        transformer.run()
+        transformer.transform_data()
         future = publisher.publish(topic=topic_path, data=data)
         message_id = future.result()
 
