@@ -1,4 +1,4 @@
-name: 'Deploy ETL to Google Cloud Functions'
+name: 'Deploy monolithic ETL to Google Cloud Functions'
 
 on:
   push:
