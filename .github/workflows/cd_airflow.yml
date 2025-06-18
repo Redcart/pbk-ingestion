@@ -1,4 +1,4 @@
-name: 'Deploy AirflowETL to Google Cloud Functions'
+name: 'Deploy Airflow ETL to Google Cloud Functions'
 
 on:
   push:
@@ -100,6 +100,10 @@ jobs:
         # Install a specific version of uv.
         version: ${{ env.UV_VERSION }}
 
-    - name: Copy dags folder to Google Cloud Storage bucket
+    - name: Update Airflow Dags in Google Cloud Storage Bucket
       run: |
-        gsutil -m cp -r dags/* gs://gcs-pbk-composer-dev/dags/
+        gcloud storage rsync \
+        dags \
+        gs://gcs-pbk-composer-dev/dags \
+        --recursive \
+        --delete-unmatched-destination-objects
