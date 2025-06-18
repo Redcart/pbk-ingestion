@@ -9,6 +9,7 @@ from airflow.operators.python import PythonOperator
 from utils import get_data, transform_data, ingest_data
 
 GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID")
+DATASET = os.getenv("DATASET")
 GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME")
 URL = os.getenv("API_URL")
 
@@ -59,7 +60,7 @@ with DAG(
         python_callable=ingest_data,
         op_kwargs={
             "project_id": GCP_PROJECT_ID,
-            "dataset": "public_bike",
+            "dataset": DATASET,
             "bucket_name": GCS_BUCKET_NAME,
             "current_ymd": current_ymd,
             "current_minute": current_minute,
@@ -111,7 +112,7 @@ with DAG(
         python_callable=ingest_data,
         op_kwargs={
             "project_id": GCP_PROJECT_ID,
-            "dataset": "public_bike",
+            "dataset": DATASET,
             "bucket_name": GCS_BUCKET_NAME,
             "current_ymd": current_ymd,
             "current_minute": current_minute,
