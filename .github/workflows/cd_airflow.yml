@@ -107,3 +107,8 @@ jobs:
         gs://gcs-pbk-composer-dev/dags \
         --recursive \
         --delete-unmatched-destination-objects
+
+    - name: Add  package to Airflow Dags in Google Cloud Storage Bucket
+      run: |
+        gcloud storage cp -r src \
+        gs://gcs-pbk-composer-dev/dags/
