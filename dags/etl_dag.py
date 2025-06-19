@@ -11,7 +11,7 @@ from utils import get_data, transform_data, ingest_data
 GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID")
 DATASET = os.getenv("DATASET")
 GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME")
-URL = os.getenv("API_URL")
+API_URL = os.getenv("API_URL")
 
 default_args = {
     "start_date": airflow.utils.dates.days_ago(0),
@@ -35,7 +35,7 @@ with DAG(
         task_id="extract_task",
         python_callable=get_data,
         op_kwargs={
-            "url": URL,
+            "url": API_URL,
             "bucket_name": GCS_BUCKET_NAME,
             "current_ymd": current_ymd,
             "current_minute": current_minute,
@@ -87,7 +87,7 @@ with DAG(
         task_id="extract_task",
         python_callable=get_data,
         op_kwargs={
-            "url": URL,
+            "url": API_URL,
             "bucket_name": GCS_BUCKET_NAME,
             "current_ymd": current_ymd,
             "current_minute": current_minute,
