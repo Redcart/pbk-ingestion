@@ -108,7 +108,17 @@ jobs:
         --recursive \
         --delete-unmatched-destination-objects
 
-    - name: Add  package to Airflow Dags in Google Cloud Storage Bucket
+    - name: Add package to Airflow Dags in Google Cloud Storage Bucket
       run: |
         gcloud storage cp -r src \
         gs://gcs-pbk-composer-dev/dags/
+
+    - name: update environment variables in Airflow
+      run: |
+        gcloud composer environments update \
+          pbk-composer \
+          --location ${{ env.GCP_REGION }} \
+          --update-env-variables=GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }} \
+          --update-env-variables=GCS_BUCKET_NAME=${{ env.GCS_BUCKET_NAME }}\
+          --update-env-variables=DATASET=${{ env.DATASET }} \
+          --update-env-variables=API_URL=${{ env.API_URL }} \
