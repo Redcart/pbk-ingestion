@@ -18,6 +18,8 @@ env:
   WIF_POOL_PROVIDER: ${{ vars.WIF_POOL_PROVIDER }} # Workload Identity Federation Provider
   PROJECT: ${{ vars.PROJECT }}
   STREAM: ${{ vars.STREAM }}
+  PUBSUB_TOPIC_INGEST: ${{ vars.PUBSUB_TOPIC_INGEST }}
+  PUBSUB_TOPIC_TRANSFORM: ${{ vars.PUBSUB_TOPIC_TRANSFORM }}
   UV_VERSION: 0.7.8 # Version of uv to install
 
 jobs:
@@ -70,6 +72,16 @@ jobs:
       run: make tests
 
   etl:
+    strategy:
+      matrix:
+        cloud_function: [extract, transform, load]
+        include:
+        - cloud_function: extract
+          trigger: http
+        - cloud_function: transform
+          trigger: topic transformation
+        - cloud_function: load
+          trigger: topic ingestion
     environment: prd
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
@@ -99,21 +111,21 @@ jobs:
 
     - name: Copy source code to Cloud Function directory
       run: |
-        mkdir -p cloud_function_etl
-        cp -r src/ cloud_function_etl/src
-        cp main.py cloud_function_etl/
-        uv export --no-hashes --no-header --no-annotate --format requirements.txt > cloud_function_etl/requirements.txt
+        mkdir -p cloud_function_${{ matrix.cloud_function }}
+        cp -r src/ cloud_function_${{ matrix.cloud_function }}/src
+        mv main_${{ matrix.cloud_function }}.py cloud_function_${{ matrix.cloud_function }}/main.py
+        uv export --no-hashes --no-header --no-annotate --format requirements.txt > cloud_function_${{ matrix.cloud_function }}/requirements.txt
 
     - name: Deploy Cloud Function
       run: |
-        gcloud functions deploy ${{ env.PROJECT }}-${{ env.STREAM }} \
+        gcloud functions deploy ${{ env.PROJECT }}-${{ env.STREAM }}-${{ matrix.cloud_function }} \
         --gen2 \
         --region=${{ env.GCP_REGION }} \
         --runtime=python313 \
         --memory=1G \
-        --source=cloud_function_etl \
-        --trigger-http \
-        --entry-point=extract_transform_load \
+        --source=cloud_function_${{ matrix.cloud_function }} \
+        --trigger-${{ matrix.trigger }} \
+        --entry-point=${{ matrix.cloud_function }} \
         --no-allow-unauthenticated \
         --ingress-settings=internal-only \
         --run-service-account=${{ env.SERVICE_ACCOUNT_RUNTIME }} \
@@ -122,4 +134,5 @@ jobs:
         --set-env-vars GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }} \
         --set-env-vars DATASET=${{ env.DATASET }} \
         --set-env-vars API_URL=${{ env.API_URL }} \
-        --set-env-vars TAG=${{ env.TAG }}
+        --set-env-vars PUBSUB_TOPIC_INGEST=${{ env.PUBSUB_TOPIC_INGEST }} \
+        --set-env-vars PUBSUB_TOPIC_TRANSFORM=${{ env.PUBSUB_TOPIC_TRANSFORM }}
