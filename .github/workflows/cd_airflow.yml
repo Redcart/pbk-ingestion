@@ -1,0 +1,124 @@
+# name: 'Deploy Airflow ETL to Google Cloud Functions'
+
+# on:
+#   push:
+#     branches:
+#     - "stg"
+#     - "dev"
+
+# env:
+#   GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+#   GCP_PROJECT_NUMBER: ${{ vars.GCP_PROJECT_NUMBER }}
+#   GCP_REGION: ${{ vars.GCP_REGION }}
+#   GCS_BUCKET_NAME: ${{ vars.GCS_BUCKET_NAME }}
+#   DATASET: ${{ vars.DATASET }}
+#   API_URL: ${{ vars.API_URL }}
+#   SERVICE_ACCOUNT_RUNTIME: ${{ vars.SERVICE_ACCOUNT_RUNTIME }}
+#   SERVICE_ACCOUNT_GH: ${{ vars.SERVICE_ACCOUNT_GH }}
+#   WIF_POOL_ID: ${{ vars.WIF_POOL_ID }} # Workload Identity Federation Pool
+#   WIF_POOL_PROVIDER: ${{ vars.WIF_POOL_PROVIDER }} # Workload Identity Federation Provider
+#   PROJECT: ${{ vars.PROJECT }}
+#   STREAM: ${{ vars.STREAM }}
+#   PUBSUB_TOPIC_INGEST: ${{ vars.PUBSUB_TOPIC_INGEST }}
+#   PUBSUB_TOPIC_TRANSFORM: ${{ vars.PUBSUB_TOPIC_TRANSFORM }}
+#   UV_VERSION: 0.7.13 # Version of uv to install
+
+# jobs:
+
+#   pre-commit:
+#     environment: ${{ github.ref_name }}
+#     runs-on: ubuntu-latest
+#     # Add "id-token" with the intended permissions.
+#     permissions:
+#       contents: 'read'
+#       id-token: 'write'
+
+#     steps:
+#     - name: Checkout code repository
+#       uses: actions/checkout@v4
+
+#     - name: Install uv
+#       uses: astral-sh/setup-uv@v6
+#       with:
+#         # Install a specific version of uv.
+#         version: ${{ env.UV_VERSION }}
+
+#     - name: Install dependencies
+#       run:  make install
+
+#     - name: pre-commit run
+#       run: make pre-commit
+
+#   tests:
+#     environment: ${{ github.ref_name }}
+#     runs-on: ubuntu-latest
+#     # Add "id-token" with the intended permissions.
+#     permissions:
+#       contents: 'read'
+#       id-token: 'write'
+
+#     needs: pre-commit
+
+#     steps:
+#     - name: Checkout code repository
+#       uses: actions/checkout@v4
+
+#     - name: Install uv
+#       uses: astral-sh/setup-uv@v6
+#       with:
+#         # Install a specific version of uv.
+#         version: ${{ env.UV_VERSION }}
+
+#     - name: tests
+#       run: make tests
+
+#   etl:
+#     environment: ${{ github.ref_name }}
+#     runs-on: ubuntu-latest
+#     # Add "id-token" with the intended permissions.
+#     permissions:
+#         contents: 'read'
+#         id-token: 'write'
+
+#     needs: [pre-commit, tests]
+
+#     steps:
+#     - name: Checkout code repository
+#       uses: actions/checkout@v4
+
+#     - name: Authentication to Google Cloud Platform
+#       uses: google-github-actions/auth@v2
+#       with:
+#        token_format: access_token
+#        workload_identity_provider: 'projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ env.WIF_POOL_ID }}/providers/${{ env.WIF_POOL_PROVIDER }}'
+#        service_account: ${{ env.SERVICE_ACCOUNT_GH }}
+#        access_token_lifetime: 300s
+
+#     - name: Install uv
+#       uses: astral-sh/setup-uv@v6
+#       with:
+#         # Install a specific version of uv.
+#         version: ${{ env.UV_VERSION }}
+
+#     - name: Update Airflow Dags in Google Cloud Storage Bucket
+#       run: |
+#         gcloud storage rsync \
+#         dags \
+#         gs://gcs-pbk-composer-dev/dags \
+#         --recursive \
+#         --delete-unmatched-destination-objects
+
+#     - name: Add package to Airflow Dags in Google Cloud Storage Bucket
+#       run: |
+#         gcloud storage cp -r src \
+#         gs://gcs-pbk-composer-dev/dags/
+
+#     - name: update environment variables in Airflow
+#       run: |
+#         gcloud composer environments update \
+#           pbk-composer \
+#           --location ${{ env.GCP_REGION }} \
+#           --update-env-variables=GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }} \
+#           --update-env-variables=GCS_BUCKET_NAME=${{ env.GCS_BUCKET_NAME }}\
+#           --update-env-variables=DATASET=${{ env.DATASET }} \
+#           --update-env-variables=API_URL=${{ env.API_URL }} \
